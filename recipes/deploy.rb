@@ -33,7 +33,11 @@ remote_file '/etc/opsworks-customs/ansible.zip' do
 end
 
 
-execute 'extract_some_tar' do
+taskname = "extract_ansible_tar_for_"+layer
+
+Chef::Log.info("Extracting playbooks")
+
+execute taskname do
   command 'unzip /etc/opsworks-customs/ansible.zip'
   cwd zippath
 end
