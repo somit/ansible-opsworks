@@ -47,7 +47,7 @@ end
 # Temporary setup code ends
 
 Chef::Log.info("Custom ansible data #{node['custom_ansible']}")
-Chef::Log.info("Node deploy data #{node['deploy']}")
+Chef::Log.info("Node deploy data #{node['deploy'].to_json}")
 
 
 extra_vars = {}
