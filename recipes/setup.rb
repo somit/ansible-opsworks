@@ -20,17 +20,31 @@ folder = node['ansible']['folder']
 zippath = '/etc/opsworks-customs'
 basepath  = '/etc/opsworks-customs/'+folder
 
+Chef::Log.info("Environment #{environment}")
+Chef::Log.info("Layer #{layer}")
+Chef::Log.info("Playbooks #{playbooks}")
+Chef::Log.info("Folder #{folder}")
+Chef::Log.info("zippath #{zippath}")
+Chef::Log.info("basepath #{basepath}")
+
+
+Chef::Log.info("Delete zip path if any")
+
 directory zippath do
   mode '0755'
   recursive true
   action :delete
 end
 
+Chef::Log.info("Create zip path")
+
 directory zippath do
   mode '0755'
   recursive true
   action :create
 end
+
+Chef::Log.info("Fetching #{playbooks}")
 
 remote_file '/etc/opsworks-customs/ansible.zip' do
   source playbooks
@@ -38,11 +52,15 @@ remote_file '/etc/opsworks-customs/ansible.zip' do
   action :create
 end
 
+Chef::Log.info("Extracting playbooks")
+
 execute 'extract_some_tar' do
   command 'unzip /etc/opsworks-customs/ansible.zip'
   cwd zippath
 end
 
+
+Chef::Log.info("Setting up role")
 # If the role for this layer is defined in custom json then set the role to what's defined
 # If not, set the role to the name of the layer
 role = node['ansible']['layers'][layer]['role'] rescue nil
@@ -50,10 +68,14 @@ if role.nil?
   role = layer
 end
 
+Chef::Log.info("Tagging instance")
+
 execute "tag instance" do
   command "aws ec2 create-tags --tags Key=environment,Value=#{environment} Key=role,Value=#{role} --resources `curl http://169.254.169.254/latest/meta-data/instance-id/` --region #{node['opsworks']['instance']['region']}"
   action :run
 end
+
+Chef::Log.info("Running setup with .... #{extra_vars.to_json}")
 
 execute "setup" do
   command "ansible-playbook -i #{basepath}/inv #{basepath}/#{node['opsworks']['activity']}.yml --extra-vars '#{extra_vars.to_json}'"
