@@ -6,6 +6,7 @@ extra_vars['ansible']  = node['ansible']
 Chef::Application.fatal!("'ansible['environment']' must be defined in custom json for the opsworks stack") if node['ansible'].nil? || node['ansible']['environment'].nil? || node['ansible']['environment'].empty?
 Chef::Application.fatal!("'ansible['playbooks']' must be defined in custom json for the opsworks stack") if node['ansible'].nil? || node['ansible']['playbooks'].nil? || node['ansible']['playbooks'].empty?
 Chef::Application.fatal!("'ansible['folder']' must be defined in custom json for the opsworks stack") if node['ansible'].nil? || node['ansible']['folder'].nil? || node['ansible']['folder'].empty?
+Chef::Application.fatal!("'ansible['version']' must be defined in custom json for the opsworks stack") if node['ansible'].nil? || node['ansible']['version'].nil? || node['ansible']['version'].empty?
 
 apt_package 'ansible' do
   action :install
@@ -16,6 +17,7 @@ environment = node['ansible']['environment']
 layer = node['opsworks']['instance']['layers'].first
 playbooks = node['ansible']['playbooks']
 folder = node['ansible']['folder']
+version = node['ansible']['version']
 
 zippath = '/etc/opsworks-customs'
 basepath  = '/etc/opsworks-customs/'+folder
@@ -26,6 +28,7 @@ Chef::Log.info("Playbooks #{playbooks}")
 Chef::Log.info("Folder #{folder}")
 Chef::Log.info("zippath #{zippath}")
 Chef::Log.info("basepath #{basepath}")
+Chef::Log.info("Version #{version}")
 
 
 
@@ -45,7 +48,7 @@ remote_file '/etc/opsworks-customs/ansible.zip' do
   action :create
 end
 
-taskname = "extract_ansible_tar_for_"+layer
+taskname = "extract_ansible_tar_for_"+version
 
 Chef::Log.info("Extracting playbooks")
 

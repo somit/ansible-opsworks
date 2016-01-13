@@ -6,6 +6,7 @@ environment = node['ansible']['environment']
 layer = node['opsworks']['instance']['layers'].first
 playbooks = node['ansible']['playbooks']
 folder = node['ansible']['folder']
+version = node['ansible']['version']
 
 zippath = '/etc/opsworks-customs'
 basepath  = '/etc/opsworks-customs/'+folder
@@ -17,6 +18,7 @@ Chef::Log.info("Playbooks #{playbooks}")
 Chef::Log.info("Folder #{folder}")
 Chef::Log.info("zippath #{zippath}")
 Chef::Log.info("basepath #{basepath}")
+Chef::Log.info("Version #{version}")
 
 
 directory zippath do
@@ -33,7 +35,7 @@ remote_file '/etc/opsworks-customs/ansible.zip' do
 end
 
 
-taskname = "extract_ansible_tar_for_"+layer
+taskname = "extract_ansible_tar_for_"+version
 
 Chef::Log.info("Extracting playbooks")
 
