@@ -10,23 +10,27 @@ folder = node['ansible']['folder']
 zippath = '/etc/opsworks-customs'
 basepath  = '/etc/opsworks-customs/'+folder
 
-directory zippath do
-  mode '0755'
-  recursive true
-  action :delete
-end
+Chef::Log.info("Environment #{environment}")
+Chef::Log.info("Layer #{layer}")
+Chef::Log.info("Playbooks #{playbooks}")
+Chef::Log.info("Folder #{folder}")
+Chef::Log.info("zippath #{zippath}")
+Chef::Log.info("basepath #{basepath}")
+
 
 directory zippath do
   mode '0755'
   recursive true
   action :create
 end
+
 
 remote_file '/etc/opsworks-customs/ansible.zip' do
   source playbooks
   mode '0755'
   action :create
 end
+
 
 execute 'extract_some_tar' do
   command 'unzip /etc/opsworks-customs/ansible.zip'
