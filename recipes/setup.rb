@@ -28,13 +28,6 @@ Chef::Log.info("zippath #{zippath}")
 Chef::Log.info("basepath #{basepath}")
 
 
-Chef::Log.info("Delete zip path if any")
-
-directory zippath do
-  mode '0755'
-  recursive true
-  action :delete
-end
 
 Chef::Log.info("Create zip path")
 
