@@ -10,6 +10,7 @@ folder = node['ansible']['folder']
 zippath = '/etc/opsworks-customs'
 basepath  = '/etc/opsworks-customs/'+folder
 
+
 Chef::Log.info("Environment #{environment}")
 Chef::Log.info("Layer #{layer}")
 Chef::Log.info("Playbooks #{playbooks}")
@@ -38,6 +39,9 @@ execute 'extract_some_tar' do
 end
 
 # Temporary setup code ends
+
+Chef::Log.info("Custom ansible data #{node['custom_ansible']}")
+
 
 extra_vars = {}
 app = node['custom_ansible']['app']
